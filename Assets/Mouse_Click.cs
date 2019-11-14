@@ -10,12 +10,24 @@ public class Mouse_Click : MonoBehaviour
     public Sprite[] list = new Sprite[21];
     public int spriteToDo = (int)TileEnum.HOME;
 
-    int[,] tiles = new int[50, 30];
+
+    //36.? x len, 36 y len
+    readonly int xMax = 47;
+    readonly int yMax = 30;
+    int[,] tiles = null; 
 
     // Start is called before the first frame update
     void Start()
     {
-
+        tiles = new int[xMax, yMax];
+        //initialise empty
+        for(int x=0; x<xMax; x++)
+        {
+            for(int y=0; y<yMax; y++)
+            {
+                tiles[x, y] = -1;
+            }
+        }
     }
 
     // Update is called once per frame
@@ -24,17 +36,53 @@ public class Mouse_Click : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             //Debug.Log("Pressed primary button.");
-            if(Input.mousePosition.x > 200)
+            if (Input.mousePosition.x > 200 || tiles == null)
             {
-                Debug.Log(Input.mousePosition.ToString());
+                //Debug.Log(Input.mousePosition.ToString());
             }
+            int xPos = (int)Input.mousePosition.x;
+            if (xPos < 200)
+            {
+                return;
+            }
+            xPos -= 200;
+            xPos /= 36;
+            int yPos = ((int)Input.mousePosition.y) / 36;
+
+            if (xPos >= xMax || yPos >= yMax)
+            {
+                Debug.Log("Too far, would leave array");
+                return;
+            }
+            tiles[xPos, yPos] = spriteToDo;
+
             
 
         }
 
         if (Input.GetMouseButtonDown(1))
         {
-            Debug.Log("Pressed secondary button.");
+            //Debug.Log("Pressed primary button.");
+            if (Input.mousePosition.x > 200 || tiles == null)
+            {
+                //Debug.Log(Input.mousePosition.ToString());
+            }
+            int xPos = (int)Input.mousePosition.x;
+            if (xPos < 200)
+            {
+                return;
+            }
+            xPos -= 200;
+            xPos /= 36;
+            int yPos = ((int)Input.mousePosition.y) / 36;
+
+            if (xPos >= xMax || yPos >= yMax)
+            {
+                Debug.Log("Too far, would leave array");
+                return;
+            }
+            // remove the sprite
+            tiles[xPos, yPos] = -1;
         }
             
     }
