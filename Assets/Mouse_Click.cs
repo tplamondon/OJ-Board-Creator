@@ -14,7 +14,8 @@ public class Mouse_Click : MonoBehaviour
     //36.? x len, 36 y len
     readonly int xMax = 47;
     readonly int yMax = 30;
-    int[,] tiles = null; 
+    int[,] tiles = null;
+    GameObject[,] objects = null;
 
     // Start is called before the first frame update
     void Start()
@@ -26,6 +27,16 @@ public class Mouse_Click : MonoBehaviour
             for(int y=0; y<yMax; y++)
             {
                 tiles[x, y] = -1;
+            }
+        }
+
+        objects = new GameObject[xMax, yMax];
+        //initialise empty
+        for (int x = 0; x < xMax; x++)
+        {
+            for (int y = 0; y < yMax; y++)
+            {
+                objects[x, y] = null;
             }
         }
     }
@@ -55,6 +66,7 @@ public class Mouse_Click : MonoBehaviour
                 return;
             }
             tiles[xPos, yPos] = spriteToDo;
+            
 
             
 
@@ -83,6 +95,10 @@ public class Mouse_Click : MonoBehaviour
             }
             // remove the sprite
             tiles[xPos, yPos] = -1;
+            if(objects[xPos,yPos] != null)
+            {
+                Destroy(objects[xPos, yPos]);
+            }
         }
             
     }
