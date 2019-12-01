@@ -16,6 +16,7 @@ public enum TileEnum
     WARPMOVE2,
     MOVE,
     MOVE2,
+    BLANK,
     ICE,
     HEAL,
     HEAL2,

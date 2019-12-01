@@ -7,14 +7,20 @@ using UnityEngine.UI;
 public class Mouse_Click : MonoBehaviour
 {
 
-    public Sprite[] spriteList = new Sprite[21];
+    public Sprite[] spriteList = new Sprite[22];
     public int spriteToDo = (int)TileEnum.HOME;
 
-    //36.? x len, 36 y len
-    readonly int xMax = 47;
-    readonly int yMax = 30;
+    public const int LEFT = 0;
+    public const int UP = 1;
+    public const int DOWN = 2;
+    public const int RIGHT = 3;
+
+    readonly int xMax = 14;
+    readonly int yMax = 8;
     int[,] tiles = null;
     GameObject[,] objects = null;
+    GameObject[,,] arrows = null;
+    bool[,,] arrowTiles = null;
 
     // Start is called before the first frame update
     void Start()
@@ -38,6 +44,35 @@ public class Mouse_Click : MonoBehaviour
                 objects[x, y] = null;
             }
         }
+
+        arrows = new GameObject[xMax, yMax, 4];
+        //initialise empty
+        for (int x = 0; x < xMax; x++)
+        {
+            for (int y = 0; y < yMax; y++)
+            {
+                for(int z = 0; z<4; z++)
+                {
+                    arrows[x, y, z] = null;
+                }
+                
+            }
+        }
+
+        arrowTiles = new bool[xMax, yMax, 4];
+        //initialise empty
+        for (int x = 0; x < xMax; x++)
+        {
+            for (int y = 0; y < yMax; y++)
+            {
+                for (int z = 0; z < 4; z++)
+                {
+                    arrowTiles[x, y, z] = false;
+                }
+
+            }
+        }
+
     }
 
     // Update is called once per frame
@@ -57,41 +92,113 @@ public class Mouse_Click : MonoBehaviour
             {
                 return;
             }
-            xPos -= 200;
-            xPos /= 36;
-            int yPos = ((int)Input.mousePosition.y) / 36;
 
-            if (xPos >= xMax || yPos >= yMax)
+            var point = Camera.main.ScreenToWorldPoint(new Vector3(x, y, Camera.main.nearClipPlane));
+
+            int xLoc = (int)Mathf.RoundToInt(point.x);
+            int yLoc = (int)Mathf.RoundToInt(point.y);
+
+            if (xLoc >= xMax / 2 || yLoc >= yMax / 2 || xLoc <= -xMax / 2 || yLoc <= -yMax / 2)
             {
                 Debug.Log("Too far, would leave array");
                 return;
             }
-            tiles[xPos, yPos] = spriteToDo;
 
-            if (objects[xPos, yPos] != null)
+            //if it's a regular tile
+            if (spriteToDo != (int)TileEnum.LEFT || spriteToDo != (int)TileEnum.UP || spriteToDo != (int)TileEnum.DOWN || spriteToDo != (int)TileEnum.RIGHT)
             {
-                Destroy(objects[xPos, yPos]);
+                Debug.Log(spriteToDo);
+                //set tile as proper tile (for png conversion later)
+                tiles[xLoc + xMax / 2, yLoc + yMax / 2] = spriteToDo;
+
+                //destroy old object
+                if (objects[xLoc + xMax / 2, yLoc + yMax / 2] != null)
+                {
+                    Destroy(objects[xLoc + xMax / 2, yLoc + yMax / 2]);
+                }
+
+                //create the object
+                GameObject obj = new GameObject();
+                obj.AddComponent<SpriteRenderer>();
+                obj.GetComponent<SpriteRenderer>().sprite = spriteList[spriteToDo];
+
+                float objWidth = obj.GetComponent<SpriteRenderer>().bounds.size.x;
+                float objHeight = obj.GetComponent<SpriteRenderer>().bounds.size.y;
+                //Debug.Log("Width: "+objWidth);
+                obj.GetComponent<Transform>().localScale = new Vector3(1 / objWidth, 1 / objHeight, 1);
+
+                //Debug.Log(pointOld.x+", "+ pointOld.y);
+                obj.transform.position = new Vector3(xLoc, yLoc, 0);
+                objects[xLoc + xMax / 2, yLoc + yMax / 2] = obj;
+                Debug.Log("xLoc = " + xLoc);
+                Debug.Log("yLoc = " + yLoc);
             }
+            //else, it's an arrow
+            else
+            {
+                //if there's no tile
+                if (tiles[xLoc + xMax / 2, yLoc + yMax / 2] == -1)
+                {
+                    return;
+                }
 
-            //36.? x len, 36 y len
+                if (spriteToDo == (int)TileEnum.LEFT)
+                {
+                    arrowTiles[xLoc + xMax / 2, yLoc + yMax / 2, LEFT] = true;
+                    //destroy old object
+                    if (arrows[xLoc + xMax / 2, yLoc + yMax / 2, LEFT] != null)
+                    {
+                        Destroy(arrows[xLoc + xMax / 2, yLoc + yMax / 2, LEFT]);
+                    }
+                    //create the object
+                    GameObject obj = new GameObject();
+                    obj.AddComponent<SpriteRenderer>();
+                    obj.GetComponent<SpriteRenderer>().sprite = spriteList[spriteToDo];
+
+                    float objWidth = obj.GetComponent<SpriteRenderer>().bounds.size.x;
+                    float objHeight = obj.GetComponent<SpriteRenderer>().bounds.size.y;
+                    //Debug.Log("Width: "+objWidth);
+                    //obj.GetComponent<Transform>().localScale = new Vector3(1 / objWidth, 1 / objHeight, 1);
+
+                    //Debug.Log(pointOld.x+", "+ pointOld.y);
+                    obj.transform.position = new Vector3(xLoc, yLoc, 0);
+                    objects[xLoc + xMax / 2, yLoc + yMax / 2] = obj;
+                    Debug.Log("xLoc = " + xLoc);
+                    Debug.Log("yLoc = " + yLoc);
+                }
+                if (spriteToDo == (int)TileEnum.UP)
+                {
+                    arrowTiles[xLoc + xMax / 2, yLoc + yMax / 2, UP] = true;
+                    //destroy old object
+                    if (arrows[xLoc + xMax / 2, yLoc + yMax / 2, UP] != null)
+                    {
+                        Destroy(arrows[xLoc + xMax / 2, yLoc + yMax / 2, UP]);
+                    }
+                }
+                if (spriteToDo == (int)TileEnum.DOWN)
+                {
+                    arrowTiles[xLoc + xMax / 2, yLoc + yMax / 2, DOWN] = true;
+                    //destroy old object
+                    if (arrows[xLoc + xMax / 2, yLoc + yMax / 2, DOWN] != null)
+                    {
+                        Destroy(arrows[xLoc + xMax / 2, yLoc + yMax / 2, DOWN]);
+                    }
+                }
+                if (spriteToDo == (int)TileEnum.RIGHT)
+                {
+                    arrowTiles[xLoc + xMax / 2, yLoc + yMax / 2, RIGHT] = true;
+                    //destroy old object
+                    if (arrows[xLoc + xMax / 2, yLoc + yMax / 2, RIGHT] != null)
+                    {
+                        Destroy(arrows[xLoc + xMax / 2, yLoc + yMax / 2, RIGHT]);
+                    }
+                }
+
+            }
             
 
-            //create the object
-            GameObject obj = new GameObject();
-            obj.AddComponent<SpriteRenderer>();
-            obj.GetComponent<SpriteRenderer>().sprite = spriteList[spriteToDo];
-
-            var rect = GUIRectWithObject(obj);
-            obj.GetComponent<Transform>().localScale = new Vector3(36/rect.width , 36/rect.height , 1);
-
-            Vector3 point = new Vector3();
-            point = Camera.main.ScreenToWorldPoint(new Vector3((xPos*36)+200, yPos*36, Camera.main.nearClipPlane));
-            Debug.Log(point.x+", "+point.y);
-            obj.transform.position = new Vector3(point.x, point.y, 0);
-            objects[xPos, yPos] = obj;
 
 
-            
 
         }
 
@@ -103,65 +210,149 @@ public class Mouse_Click : MonoBehaviour
                 //Debug.Log(Input.mousePosition.ToString());
             }
             int xPos = (int)Input.mousePosition.x;
+            int x = (int)Input.mousePosition.x;
+            int y = (int)Input.mousePosition.y;
             if (xPos < 200)
             {
                 return;
             }
-            xPos -= 200;
-            xPos /= 36;
-            int yPos = ((int)Input.mousePosition.y) / 36;
 
-            if (xPos >= xMax || yPos >= yMax)
+            var point = Camera.main.ScreenToWorldPoint(new Vector3(x, y, Camera.main.nearClipPlane));
+
+            int xLoc = (int)Mathf.RoundToInt(point.x);
+            int yLoc = (int)Mathf.RoundToInt(point.y);
+            /*
+            if (point.x >= 0)
+            {
+                xLoc = (int)(point.x + 0.5);
+            }
+            else
+            {
+                xLoc = (int)(point.x - 0.5);
+            }
+            if (point.y >= 0)
+            {
+                yLoc = (int)(point.y + 0.5);
+            }
+            else
+            {
+                yLoc = (int)(point.y - 0.5);
+            }
+            */
+
+            if (xLoc >= xMax / 2 || yLoc >= yMax / 2 || xLoc <= -xMax / 2 || yLoc <= -yMax / 2)
             {
                 Debug.Log("Too far, would leave array");
                 return;
             }
-            // remove the sprite
-            tiles[xPos, yPos] = -1;
-            if(objects[xPos,yPos] != null)
-            {
-                Destroy(objects[xPos, yPos]);
-            }
+
+            //destroy objects
+            destroyTileAndArrows(xLoc + xMax / 2, yLoc + yMax / 2);
+
         }
-            
     }
 
-    public static Rect GUIRectWithObject(GameObject go)
+    public void destroyTileAndArrows(int x, int y)
     {
-        Vector3 cen = go.GetComponent<Renderer>().bounds.center;
-        Vector3 ext = go.GetComponent<Renderer>().bounds.extents;
-        Vector2[] extentPoints = new Vector2[8]
-         {
-               WorldToGUIPoint(new Vector3(cen.x-ext.x, cen.y-ext.y, cen.z-ext.z)),
-               WorldToGUIPoint(new Vector3(cen.x+ext.x, cen.y-ext.y, cen.z-ext.z)),
-               WorldToGUIPoint(new Vector3(cen.x-ext.x, cen.y-ext.y, cen.z+ext.z)),
-               WorldToGUIPoint(new Vector3(cen.x+ext.x, cen.y-ext.y, cen.z+ext.z)),
-               WorldToGUIPoint(new Vector3(cen.x-ext.x, cen.y+ext.y, cen.z-ext.z)),
-               WorldToGUIPoint(new Vector3(cen.x+ext.x, cen.y+ext.y, cen.z-ext.z)),
-               WorldToGUIPoint(new Vector3(cen.x-ext.x, cen.y+ext.y, cen.z+ext.z)),
-               WorldToGUIPoint(new Vector3(cen.x+ext.x, cen.y+ext.y, cen.z+ext.z))
-         };
-        Vector2 min = extentPoints[0];
-        Vector2 max = extentPoints[0];
-        foreach (Vector2 v in extentPoints)
+        //if there's a tile
+        if (objects[x, y] != null)
         {
-            min = Vector2.Min(min, v);
-            max = Vector2.Max(max, v);
+            Destroy(objects[x, y]);
         }
-        return new Rect(min.x, min.y, max.x - min.x, max.y - min.y);
-    }
-
-    public static Vector2 WorldToGUIPoint(Vector3 world)
-    {
-        Vector2 screenPoint = Camera.main.WorldToScreenPoint(world);
-        screenPoint.y = (float)Screen.height - screenPoint.y;
-        return screenPoint;
+        //set to null
+        objects[x, y] = null;
+        //set that tile to -1 to mark as not used
+        tiles[x, y] = -1;
+        for(int z=0; z<4; z++)
+        {
+            //if there's an arrow
+            if(arrows[x,y,z] != null)
+            {
+                Destroy(arrows[x, y, z]);
+            }
+            //set to null
+            arrows[x, y, z] = null;
+            arrowTiles[x, y, z] = false;
+        }
     }
 
     public void changeSprite()
     {
         var drop = GameObject.Find("TileChoose").GetComponent<Dropdown>();
         //Debug.Log(drop.value);
-        spriteToDo = drop.value;
+        string name = drop.name;
+        switch (name)
+        {
+            case "Home":
+                spriteToDo = (int)TileEnum.HOME;
+                break;
+            case "Star":
+                spriteToDo = (int)TileEnum.STAR;
+                break;
+            case "Star x2":
+                spriteToDo = (int)TileEnum.STAR2;
+                break;
+            case "Draw":
+                spriteToDo = (int)TileEnum.DRAW;
+                break;
+            case "Draw x2":
+                spriteToDo = (int)TileEnum.DRAW2;
+                break;
+            case "Battle":
+                spriteToDo = (int)TileEnum.BATTLE;
+                break;
+            case "Battle x2":
+                spriteToDo = (int)TileEnum.BATTLE2;
+                break;
+            case "Drop":
+                spriteToDo = (int)TileEnum.DROP;
+                break;
+            case "Drop x2":
+                spriteToDo = (int)TileEnum.DROP2;
+                break;
+            case "Warp":
+                spriteToDo = (int)TileEnum.WARP;
+                break;
+            case "Warp Move":
+                spriteToDo = (int)TileEnum.WARPMOVE;
+                break;
+            case "Warp Move x2":
+                spriteToDo = (int)TileEnum.WARPMOVE2;
+                break;
+            case "Move":
+                spriteToDo = (int)TileEnum.MOVE;
+                break;
+            case "Move x2":
+                spriteToDo = (int)TileEnum.MOVE2;
+                break;
+            case "Blank":
+                spriteToDo = (int)TileEnum.BLANK;
+                break;
+            case "Ice":
+                spriteToDo = (int)TileEnum.ICE;
+                break;
+            case "Heal":
+                spriteToDo = (int)TileEnum.HEAL;
+                break;
+            case "Heal x2":
+                spriteToDo = (int)TileEnum.HEAL2;
+                break;
+            case "Left Arrow":
+                spriteToDo = (int)TileEnum.LEFT;
+                break;
+            case "Up Arrow":
+                spriteToDo = (int)TileEnum.UP;
+                break;
+            case "Down Arrow":
+                spriteToDo = (int)TileEnum.DOWN;
+                break;
+            case "Right Arrow":
+                spriteToDo = (int)TileEnum.RIGHT;
+                break;
+            default:
+                spriteToDo = (int)TileEnum.HOME;
+                break;
+        }
+        //spriteToDo = drop.value;
     }
 }
