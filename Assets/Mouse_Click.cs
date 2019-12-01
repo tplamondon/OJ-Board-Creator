@@ -15,8 +15,8 @@ public class Mouse_Click : MonoBehaviour
     public const int DOWN = 2;
     public const int RIGHT = 3;
 
-    readonly int xMax = 14;
-    readonly int yMax = 8;
+    readonly int xMax = 30;
+    readonly int yMax = 20;
     int[,] tiles = null;
     GameObject[,] objects = null;
     GameObject[,,] arrows = null;
@@ -78,6 +78,9 @@ public class Mouse_Click : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        /******************************
+         * LEFT CLICKED
+         *******************************/
         if (Input.GetMouseButtonDown(0))
         {
             //Debug.Log("Pressed primary button.");
@@ -286,13 +289,10 @@ public class Mouse_Click : MonoBehaviour
                 }
 
             }
-            
-
-
-
-
         }
-
+        /******************************
+         * RIGHT CLICKED
+         *******************************/
         if (Input.GetMouseButtonDown(1))
         {
             //Debug.Log("Pressed primary button.");
@@ -323,6 +323,33 @@ public class Mouse_Click : MonoBehaviour
             destroyTileAndArrows(xLoc + xMax / 2, yLoc + yMax / 2);
 
         }
+
+        if(Input.mouseScrollDelta.y > 0)
+        {
+            scrollIn();
+        }
+        else if(Input.mouseScrollDelta.y < 0)
+        {
+            scrollOut();
+        }
+    }
+
+    public void scrollIn()
+    {
+        if(Camera.main.GetComponent<Camera>().orthographicSize == 1)
+        {
+            return;
+        }
+        Camera.main.GetComponent<Camera>().orthographicSize--;
+    }
+
+    public void scrollOut()
+    {
+        if (Camera.main.GetComponent<Camera>().orthographicSize == 15)
+        {
+            return;
+        }
+        Camera.main.GetComponent<Camera>().orthographicSize++;
     }
 
     public void destroyTileAndArrows(int x, int y)
