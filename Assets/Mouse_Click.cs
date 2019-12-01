@@ -105,9 +105,8 @@ public class Mouse_Click : MonoBehaviour
             }
 
             //if it's a regular tile
-            if (spriteToDo != (int)TileEnum.LEFT || spriteToDo != (int)TileEnum.UP || spriteToDo != (int)TileEnum.DOWN || spriteToDo != (int)TileEnum.RIGHT)
+            if (spriteToDo != (int)TileEnum.LEFT && spriteToDo != (int)TileEnum.UP && spriteToDo != (int)TileEnum.DOWN && spriteToDo != (int)TileEnum.RIGHT)
             {
-                Debug.Log(spriteToDo);
                 //set tile as proper tile (for png conversion later)
                 tiles[xLoc + xMax / 2, yLoc + yMax / 2] = spriteToDo;
 
@@ -144,6 +143,18 @@ public class Mouse_Click : MonoBehaviour
 
                 if (spriteToDo == (int)TileEnum.LEFT)
                 {
+                    //if there's a tile beside us
+                    if(isValidIndex(xLoc + xMax / 2 - 1, yLoc + yMax / 2) == true){
+                        if(tiles[xLoc + xMax / 2 - 1, yLoc + yMax / 2] == -1)
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        return;
+                    }
+
                     arrowTiles[xLoc + xMax / 2, yLoc + yMax / 2, LEFT] = true;
                     //destroy old object
                     if (arrows[xLoc + xMax / 2, yLoc + yMax / 2, LEFT] != null)
@@ -161,37 +172,117 @@ public class Mouse_Click : MonoBehaviour
                     //obj.GetComponent<Transform>().localScale = new Vector3(1 / objWidth, 1 / objHeight, 1);
 
                     //Debug.Log(pointOld.x+", "+ pointOld.y);
-                    obj.transform.position = new Vector3(xLoc, yLoc, 0);
-                    objects[xLoc + xMax / 2, yLoc + yMax / 2] = obj;
-                    Debug.Log("xLoc = " + xLoc);
-                    Debug.Log("yLoc = " + yLoc);
+                    obj.transform.position = new Vector3(xLoc - 0.5f, yLoc, -0.1f);
+                    arrows[xLoc + xMax / 2, yLoc + yMax / 2, LEFT] = obj;
                 }
                 if (spriteToDo == (int)TileEnum.UP)
                 {
+                    //if there's a tile beside us
+                    if (isValidIndex(xLoc + xMax / 2, yLoc + yMax / 2 + 1) == true)
+                    {
+                        if (tiles[xLoc + xMax / 2, yLoc + yMax / 2 + 1] == -1)
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        return;
+                    }
+
                     arrowTiles[xLoc + xMax / 2, yLoc + yMax / 2, UP] = true;
                     //destroy old object
                     if (arrows[xLoc + xMax / 2, yLoc + yMax / 2, UP] != null)
                     {
                         Destroy(arrows[xLoc + xMax / 2, yLoc + yMax / 2, UP]);
                     }
+                    //create the object
+                    GameObject obj = new GameObject();
+                    obj.AddComponent<SpriteRenderer>();
+                    obj.GetComponent<SpriteRenderer>().sprite = spriteList[spriteToDo];
+
+                    float objWidth = obj.GetComponent<SpriteRenderer>().bounds.size.x;
+                    float objHeight = obj.GetComponent<SpriteRenderer>().bounds.size.y;
+                    //Debug.Log("Width: "+objWidth);
+                    //obj.GetComponent<Transform>().localScale = new Vector3(1 / objWidth, 1 / objHeight, 1);
+
+                    //Debug.Log(pointOld.x+", "+ pointOld.y);
+                    obj.transform.position = new Vector3(xLoc, yLoc + 0.5f, -0.1f);
+                    arrows[xLoc + xMax / 2, yLoc + yMax / 2, UP] = obj;
                 }
                 if (spriteToDo == (int)TileEnum.DOWN)
                 {
+                    //if there's a tile beside us
+                    if (isValidIndex(xLoc + xMax / 2, yLoc + yMax / 2 -1) == true)
+                    {
+                        if (tiles[xLoc + xMax / 2, yLoc + yMax / 2 -1] == -1)
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        return;
+                    }
+
                     arrowTiles[xLoc + xMax / 2, yLoc + yMax / 2, DOWN] = true;
                     //destroy old object
                     if (arrows[xLoc + xMax / 2, yLoc + yMax / 2, DOWN] != null)
                     {
                         Destroy(arrows[xLoc + xMax / 2, yLoc + yMax / 2, DOWN]);
                     }
+                    //create the object
+                    GameObject obj = new GameObject();
+                    obj.AddComponent<SpriteRenderer>();
+                    obj.GetComponent<SpriteRenderer>().sprite = spriteList[spriteToDo];
+
+                    float objWidth = obj.GetComponent<SpriteRenderer>().bounds.size.x;
+                    float objHeight = obj.GetComponent<SpriteRenderer>().bounds.size.y;
+                    //Debug.Log("Width: "+objWidth);
+                    //obj.GetComponent<Transform>().localScale = new Vector3(1 / objWidth, 1 / objHeight, 1);
+
+                    //Debug.Log(pointOld.x+", "+ pointOld.y);
+                    obj.transform.position = new Vector3(xLoc, yLoc - 0.5f, -0.1f);
+                    arrows[xLoc + xMax / 2, yLoc + yMax / 2, DOWN] = obj;
+                    Debug.Log("xLoc = " + xLoc);
+                    Debug.Log("yLoc = " + yLoc);
                 }
                 if (spriteToDo == (int)TileEnum.RIGHT)
                 {
+                    //if there's a tile beside us
+                    if (isValidIndex(xLoc + xMax / 2 + 1, yLoc + yMax / 2) == true)
+                    {
+                        if (tiles[xLoc + xMax / 2 + 1, yLoc + yMax / 2] == -1)
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        return;
+                    }
+
                     arrowTiles[xLoc + xMax / 2, yLoc + yMax / 2, RIGHT] = true;
                     //destroy old object
                     if (arrows[xLoc + xMax / 2, yLoc + yMax / 2, RIGHT] != null)
                     {
                         Destroy(arrows[xLoc + xMax / 2, yLoc + yMax / 2, RIGHT]);
                     }
+                    //create the object
+                    GameObject obj = new GameObject();
+                    obj.AddComponent<SpriteRenderer>();
+                    obj.GetComponent<SpriteRenderer>().sprite = spriteList[spriteToDo];
+
+                    float objWidth = obj.GetComponent<SpriteRenderer>().bounds.size.x;
+                    float objHeight = obj.GetComponent<SpriteRenderer>().bounds.size.y;
+                    //Debug.Log("Width: "+objWidth);
+                    //obj.GetComponent<Transform>().localScale = new Vector3(1 / objWidth, 1 / objHeight, 1);
+
+                    //Debug.Log(pointOld.x+", "+ pointOld.y);
+                    obj.transform.position = new Vector3(xLoc + 0.5f, yLoc, -0.1f);
+                    arrows[xLoc + xMax / 2, yLoc + yMax / 2, RIGHT] = obj;
+                    Debug.Log("xLoc = " + xLoc);
+                    Debug.Log("yLoc = " + yLoc);
                 }
 
             }
@@ -221,24 +312,6 @@ public class Mouse_Click : MonoBehaviour
 
             int xLoc = (int)Mathf.RoundToInt(point.x);
             int yLoc = (int)Mathf.RoundToInt(point.y);
-            /*
-            if (point.x >= 0)
-            {
-                xLoc = (int)(point.x + 0.5);
-            }
-            else
-            {
-                xLoc = (int)(point.x - 0.5);
-            }
-            if (point.y >= 0)
-            {
-                yLoc = (int)(point.y + 0.5);
-            }
-            else
-            {
-                yLoc = (int)(point.y - 0.5);
-            }
-            */
 
             if (xLoc >= xMax / 2 || yLoc >= yMax / 2 || xLoc <= -xMax / 2 || yLoc <= -yMax / 2)
             {
@@ -276,11 +349,21 @@ public class Mouse_Click : MonoBehaviour
         }
     }
 
+    public bool isValidIndex(int x, int y)
+    {
+        if (x < 0 || y < 0 || x >= xMax || y >= yMax)
+        {
+            return false;
+        }
+        return true;
+    }
+
     public void changeSprite()
     {
         var drop = GameObject.Find("TileChoose").GetComponent<Dropdown>();
         //Debug.Log(drop.value);
-        string name = drop.name;
+        string name = drop.options[drop.value].text;
+        Debug.Log(name);
         switch (name)
         {
             case "Home":
