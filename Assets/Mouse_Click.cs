@@ -16,8 +16,9 @@ public class Mouse_Click : MonoBehaviour
     public const int DOWN = 2;
     public const int RIGHT = 3;
 
-    const int xMax = 30;
-    const int yMax = 20;
+    //was told max size is 15x15 by someone
+    const int xMax = 15;
+    const int yMax = 15;
     int[,] tiles = null;
     GameObject[,] objects = null;
     GameObject[,,] arrows = null;
