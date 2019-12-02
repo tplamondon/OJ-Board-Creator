@@ -16,12 +16,12 @@ public class Mouse_Click : MonoBehaviour
     public const int DOWN = 2;
     public const int RIGHT = 3;
 
-    readonly int xMax = 30;
-    readonly int yMax = 20;
+    const int xMax = 30;
+    const int yMax = 20;
     int[,] tiles = null;
     GameObject[,] objects = null;
     GameObject[,,] arrows = null;
-    bool[,,] arrowTiles = null;
+    public bool[,,] arrowTiles = new bool[xMax, yMax, 4];
 
     // Start is called before the first frame update
     void Start()
@@ -61,7 +61,7 @@ public class Mouse_Click : MonoBehaviour
             }
         }
 
-        arrowTiles = new bool[xMax, yMax, 4];
+        //arrowTiles = new bool[xMax, yMax, 4];
         //initialise empty
         for (int x = 0; x < xMax; x++)
         {
@@ -128,14 +128,10 @@ public class Mouse_Click : MonoBehaviour
 
                 float objWidth = obj.GetComponent<SpriteRenderer>().bounds.size.x;
                 float objHeight = obj.GetComponent<SpriteRenderer>().bounds.size.y;
-                //Debug.Log("Width: "+objWidth);
                 obj.GetComponent<Transform>().localScale = new Vector3(1 / objWidth, 1 / objHeight, 1);
 
-                //Debug.Log(pointOld.x+", "+ pointOld.y);
                 obj.transform.position = new Vector3(xLoc, yLoc, 0);
                 objects[xLoc + xMax / 2, yLoc + yMax / 2] = obj;
-                Debug.Log("xLoc = " + xLoc);
-                Debug.Log("yLoc = " + yLoc);
             }
             //else, it's an arrow
             else
@@ -173,10 +169,7 @@ public class Mouse_Click : MonoBehaviour
 
                     float objWidth = obj.GetComponent<SpriteRenderer>().bounds.size.x;
                     float objHeight = obj.GetComponent<SpriteRenderer>().bounds.size.y;
-                    //Debug.Log("Width: "+objWidth);
-                    //obj.GetComponent<Transform>().localScale = new Vector3(1 / objWidth, 1 / objHeight, 1);
 
-                    //Debug.Log(pointOld.x+", "+ pointOld.y);
                     obj.transform.position = new Vector3(xLoc - 0.5f, yLoc, -0.1f);
                     arrows[xLoc + xMax / 2, yLoc + yMax / 2, LEFT] = obj;
                 }
@@ -208,10 +201,7 @@ public class Mouse_Click : MonoBehaviour
 
                     float objWidth = obj.GetComponent<SpriteRenderer>().bounds.size.x;
                     float objHeight = obj.GetComponent<SpriteRenderer>().bounds.size.y;
-                    //Debug.Log("Width: "+objWidth);
-                    //obj.GetComponent<Transform>().localScale = new Vector3(1 / objWidth, 1 / objHeight, 1);
 
-                    //Debug.Log(pointOld.x+", "+ pointOld.y);
                     obj.transform.position = new Vector3(xLoc, yLoc + 0.5f, -0.1f);
                     arrows[xLoc + xMax / 2, yLoc + yMax / 2, UP] = obj;
                 }
@@ -243,14 +233,9 @@ public class Mouse_Click : MonoBehaviour
 
                     float objWidth = obj.GetComponent<SpriteRenderer>().bounds.size.x;
                     float objHeight = obj.GetComponent<SpriteRenderer>().bounds.size.y;
-                    //Debug.Log("Width: "+objWidth);
-                    //obj.GetComponent<Transform>().localScale = new Vector3(1 / objWidth, 1 / objHeight, 1);
 
-                    //Debug.Log(pointOld.x+", "+ pointOld.y);
                     obj.transform.position = new Vector3(xLoc, yLoc - 0.5f, -0.1f);
                     arrows[xLoc + xMax / 2, yLoc + yMax / 2, DOWN] = obj;
-                    Debug.Log("xLoc = " + xLoc);
-                    Debug.Log("yLoc = " + yLoc);
                 }
                 if (spriteToDo == (int)TileEnum.RIGHT)
                 {
@@ -280,14 +265,10 @@ public class Mouse_Click : MonoBehaviour
 
                     float objWidth = obj.GetComponent<SpriteRenderer>().bounds.size.x;
                     float objHeight = obj.GetComponent<SpriteRenderer>().bounds.size.y;
-                    //Debug.Log("Width: "+objWidth);
-                    //obj.GetComponent<Transform>().localScale = new Vector3(1 / objWidth, 1 / objHeight, 1);
 
-                    //Debug.Log(pointOld.x+", "+ pointOld.y);
                     obj.transform.position = new Vector3(xLoc + 0.5f, yLoc, -0.1f);
                     arrows[xLoc + xMax / 2, yLoc + yMax / 2, RIGHT] = obj;
-                    Debug.Log("xLoc = " + xLoc);
-                    Debug.Log("yLoc = " + yLoc);
+
                 }
 
             }
@@ -416,7 +397,6 @@ public class Mouse_Click : MonoBehaviour
         var drop = GameObject.Find("TileChoose").GetComponent<Dropdown>();
         //Debug.Log(drop.value);
         string name = drop.options[drop.value].text;
-        Debug.Log(name);
         switch (name)
         {
             case "Home":
@@ -546,14 +526,20 @@ public class Mouse_Click : MonoBehaviour
         //start with left arrows
         bool leftArrow = arrowTiles[x, y, LEFT];
         bool rightArrowIn = false;
+
         //get if right arrow points in
         if (isValidIndex(x - 1, y) == true)
         {
-            rightArrowIn = arrowTiles[x, y, RIGHT];
+            rightArrowIn = arrowTiles[x-1, y, RIGHT];
         }
         if(leftArrow == false)
         {
             return;
+        }
+
+        if(rightArrowIn == true)
+        {
+            Debug.Log("TRUE");
         }
 
         if(rightArrowIn == false)
@@ -583,7 +569,7 @@ public class Mouse_Click : MonoBehaviour
         //get if left arrow points in
         if (isValidIndex(x + 1, y) == true)
         {
-            leftArrowIn = arrowTiles[x, y, LEFT];
+            leftArrowIn = arrowTiles[x+1, y, LEFT];
         }
         if (rightArrow == false)
         {
@@ -597,8 +583,8 @@ public class Mouse_Click : MonoBehaviour
         }
         else
         {
-            texture.SetPixel(3 * x + 2, 3 * y + 1, entryCol);
-            texture.SetPixel(3 * x + 3, 3 * y + 1, exitCol);
+            texture.SetPixel(3 * x + 2, 3 * y + 1, entryExitCol);
+            texture.SetPixel(3 * x + 3, 3 * y + 1, entryExitCol);
         }
     }
 
@@ -615,9 +601,9 @@ public class Mouse_Click : MonoBehaviour
         bool upArrow = arrowTiles[x, y, UP];
         bool downArrowIn = false;
         //get if down arrow points in
-        if (isValidIndex(x, y-1) == true)
+        if (isValidIndex(x, y+1) == true)
         {
-            downArrowIn = arrowTiles[x, y, DOWN];
+            downArrowIn = arrowTiles[x, y+1, DOWN];
         }
         if (upArrow == false)
         {
@@ -631,8 +617,8 @@ public class Mouse_Click : MonoBehaviour
         }
         else
         {
-            texture.SetPixel(3 * x + 1, 3 * y + 2, entryCol);
-            texture.SetPixel(3 * x + 1, 3 * y + 3, exitCol);
+            texture.SetPixel(3 * x + 1, 3 * y + 2, entryExitCol);
+            texture.SetPixel(3 * x + 1, 3 * y + 3, entryExitCol);
         }
     }
 
@@ -649,9 +635,9 @@ public class Mouse_Click : MonoBehaviour
         bool downArrow = arrowTiles[x, y, DOWN];
         bool upArrowIn = false;
         //get if up arrow points in
-        if (isValidIndex(x, y+1) == true)
+        if (isValidIndex(x, y-1) == true)
         {
-            upArrowIn = arrowTiles[x, y, UP];
+            upArrowIn = arrowTiles[x, y-1, UP];
         }
         if (downArrow == false)
         {
@@ -665,13 +651,18 @@ public class Mouse_Click : MonoBehaviour
         }
         else
         {
-            texture.SetPixel(3 * x + 1, 3 * y, entryCol);
-            texture.SetPixel(3 * x + 1, 3 * y - 1, exitCol);
+            texture.SetPixel(3 * x + 1, 3 * y, entryExitCol);
+            texture.SetPixel(3 * x + 1, 3 * y - 1, entryExitCol);
         }
     }
 
     public void setArrowPixels(Texture2D texture, int x, int y)
     {
+        /*if (tiles[x, y] == -1)
+        {
+            return;
+        }
+        */
         //start with left
         setLeftArrow(texture, x, y);
         //now right

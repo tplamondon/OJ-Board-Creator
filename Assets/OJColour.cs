@@ -34,7 +34,7 @@ public class OJColour
     //MOVEMENT
     public const string ENTRY = "#FFFFFF";
     public const string EXIT = "#404040";
-    public const string ENTRYEXIT = "FE006E";
+    public const string ENTRYEXIT = "#FE006E";
 
 
 }
