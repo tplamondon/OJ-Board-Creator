@@ -24,9 +24,17 @@ public class Mouse_Click : MonoBehaviour
     GameObject[,,] arrows = null;
     public bool[,,] arrowTiles = null;
 
+
+    GameObject fieldBG;
+    float fieldMaskWidth;
+    float fieldMaskHeight;
+
     // Start is called before the first frame update
     void Start()
     {
+        fieldBG = GameObject.Find("FieldMask");
+        fieldMaskWidth = fieldBG.GetComponent<SpriteRenderer>().bounds.size.x;
+        fieldMaskHeight = fieldBG.GetComponent<SpriteRenderer>().bounds.size.y;
         init();
     }
 
@@ -105,6 +113,26 @@ public class Mouse_Click : MonoBehaviour
                 break;
         }
 
+        //create the object
+        //GameObject fieldBG = GameObject.Find("FieldMask");
+
+        //float objWidth = fieldBG.GetComponent<SpriteRenderer>().bounds.size.x;
+        //float objHeight = fieldBG.GetComponent<SpriteRenderer>().bounds.size.y;
+        //fieldBG.GetComponent<SpriteRenderer>().bounds.size = new Vector3(xMax, yMax, 1)
+        fieldBG.GetComponent<Transform>().localScale = new Vector3(xMax / fieldMaskWidth, yMax / fieldMaskHeight, 1);
+
+        float xShift = 0f;
+        if(xMax%2 == 0)
+        {
+            xShift -= 0.5f;
+        }
+        float yShift = 0f;
+        if (yMax % 2 == 0)
+        {
+            yShift -= 0.5f;
+        }
+        fieldBG.transform.position = new Vector3(0 + xShift, 0 + yShift, 1);
+        //objects[xLoc + xMax / 2, yLoc + yMax / 2] = obj;
 
 
         Debug.Log(Application.dataPath);
