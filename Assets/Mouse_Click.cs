@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System.IO;
 
 public class Mouse_Click : MonoBehaviour
 {
@@ -25,6 +26,7 @@ public class Mouse_Click : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log(Application.dataPath);
         tiles = new int[xMax, yMax];
         //initialise empty
         for(int x=0; x<xMax; x++)
@@ -397,7 +399,7 @@ public class Mouse_Click : MonoBehaviour
         {
             return false;
         }
-        if(tiles[x, y] != (int)TileEnum.DECK)
+        if(tiles[x, y] == (int)TileEnum.DECK)
         {
             return false;
         }
@@ -520,6 +522,14 @@ public class Mouse_Click : MonoBehaviour
                 setArrowPixels(texture, x, y);
             }
         }
+
+        //apply the set pixels
+        texture.Apply();
+
+        //encode to png
+        byte[] bytes = texture.EncodeToPNG();
+
+        File.WriteAllBytes(Application.dataPath + "/../Field.png", bytes);
 
     }
 
