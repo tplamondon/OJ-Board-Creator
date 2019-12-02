@@ -758,4 +758,10 @@ public class Mouse_Click : MonoBehaviour
     }
 
 
+    public void quitApplication()
+    {
+        Application.Quit();
+    }
+
+
 }
