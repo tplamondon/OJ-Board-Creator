@@ -334,6 +334,9 @@ public class Mouse_Click : MonoBehaviour
         }
     }
 
+    /******************************
+     * SCROLLING
+     *******************************/
     public void scrollIn()
     {
         if(Camera.main.GetComponent<Camera>().orthographicSize == 1)
@@ -376,6 +379,9 @@ public class Mouse_Click : MonoBehaviour
         }
     }
 
+    /********************
+     *  valid indexes
+     *******************/
     public bool isValidIndex(int x, int y)
     {
         if (x < 0 || y < 0 || x >= xMax || y >= yMax)
@@ -397,6 +403,11 @@ public class Mouse_Click : MonoBehaviour
         }
         return true;
     }
+
+
+    /********************
+     *  changing sprite
+     *******************/
 
     public void changeSprite()
     {
@@ -482,4 +493,268 @@ public class Mouse_Click : MonoBehaviour
         }
         //spriteToDo = drop.value;
     }
+
+    /********************
+     *  outputting PNG
+     *******************/ 
+
+    public void outputPNG()
+    {
+        //Bitmap bmp = new Bitmap(3 * xMax, 3 * yMax);
+        Texture2D texture = new Texture2D(3*xMax, 3*yMax, TextureFormat.RGB24,false);
+
+        //set all tiles first
+        for(int x=0; x<xMax; x++)
+        {
+            for(int y=0; y<yMax; y++)
+            {
+                setPixelTile(texture, x, y);
+            }
+        }
+        //set all arrows now
+        for (int x = 0; x < xMax; x++)
+        {
+            for (int y = 0; y < yMax; y++)
+            {
+                //setPixelTile(texture, x, y);
+                setArrowPixels(texture, x, y);
+            }
+        }
+
+    }
+
+
+    public void setLeftArrow(Texture2D texture, int x, int y)
+    {
+        Color entryCol;
+        ColorUtility.TryParseHtmlString(OJColour.ENTRY, out entryCol);
+        Color exitCol;
+        ColorUtility.TryParseHtmlString(OJColour.EXIT, out exitCol);
+        Color entryExitCol;
+        ColorUtility.TryParseHtmlString(OJColour.ENTRYEXIT, out entryExitCol);
+
+        //start with left arrows
+        bool leftArrow = arrowTiles[x, y, LEFT];
+        bool rightArrowIn = false;
+        //get if right arrow points in
+        if (isValidIndex(x - 1, y) == true)
+        {
+            rightArrowIn = arrowTiles[x, y, RIGHT];
+        }
+        if(leftArrow == false)
+        {
+            return;
+        }
+
+        if(rightArrowIn == false)
+        {
+            texture.SetPixel(3 * x, 3 * y +1, entryCol);
+            texture.SetPixel(3 * x-1, 3 * y +1, exitCol);
+        }
+        else
+        {
+            texture.SetPixel(3 * x, 3 * y + 1, entryExitCol);
+            texture.SetPixel(3 * x -1, 3 * y + 1, entryExitCol);
+        }
+    }
+
+    public void setRightArrow(Texture2D texture, int x, int y)
+    {
+        Color entryCol;
+        ColorUtility.TryParseHtmlString(OJColour.ENTRY, out entryCol);
+        Color exitCol;
+        ColorUtility.TryParseHtmlString(OJColour.EXIT, out exitCol);
+        Color entryExitCol;
+        ColorUtility.TryParseHtmlString(OJColour.ENTRYEXIT, out entryExitCol);
+
+        //start with right arrows
+        bool rightArrow = arrowTiles[x, y, RIGHT];
+        bool leftArrowIn = false;
+        //get if left arrow points in
+        if (isValidIndex(x + 1, y) == true)
+        {
+            leftArrowIn = arrowTiles[x, y, LEFT];
+        }
+        if (rightArrow == false)
+        {
+            return;
+        }
+
+        if (leftArrowIn == false)
+        {
+            texture.SetPixel(3 * x +2, 3 * y + 1, entryCol);
+            texture.SetPixel(3 * x +3, 3 * y + 1, exitCol);
+        }
+        else
+        {
+            texture.SetPixel(3 * x + 2, 3 * y + 1, entryCol);
+            texture.SetPixel(3 * x + 3, 3 * y + 1, exitCol);
+        }
+    }
+
+    public void setUpArrow(Texture2D texture, int x, int y)
+    {
+        Color entryCol;
+        ColorUtility.TryParseHtmlString(OJColour.ENTRY, out entryCol);
+        Color exitCol;
+        ColorUtility.TryParseHtmlString(OJColour.EXIT, out exitCol);
+        Color entryExitCol;
+        ColorUtility.TryParseHtmlString(OJColour.ENTRYEXIT, out entryExitCol);
+
+        //start with up arrows
+        bool upArrow = arrowTiles[x, y, UP];
+        bool downArrowIn = false;
+        //get if down arrow points in
+        if (isValidIndex(x, y-1) == true)
+        {
+            downArrowIn = arrowTiles[x, y, DOWN];
+        }
+        if (upArrow == false)
+        {
+            return;
+        }
+
+        if (downArrowIn == false)
+        {
+            texture.SetPixel(3 * x + 1, 3 * y + 2, entryCol);
+            texture.SetPixel(3 * x + 1, 3 * y + 3, exitCol);
+        }
+        else
+        {
+            texture.SetPixel(3 * x + 1, 3 * y + 2, entryCol);
+            texture.SetPixel(3 * x + 1, 3 * y + 3, exitCol);
+        }
+    }
+
+    public void setDownArrow(Texture2D texture, int x, int y)
+    {
+        Color entryCol;
+        ColorUtility.TryParseHtmlString(OJColour.ENTRY, out entryCol);
+        Color exitCol;
+        ColorUtility.TryParseHtmlString(OJColour.EXIT, out exitCol);
+        Color entryExitCol;
+        ColorUtility.TryParseHtmlString(OJColour.ENTRYEXIT, out entryExitCol);
+
+        //start with down arrows
+        bool downArrow = arrowTiles[x, y, DOWN];
+        bool upArrowIn = false;
+        //get if up arrow points in
+        if (isValidIndex(x, y+1) == true)
+        {
+            upArrowIn = arrowTiles[x, y, UP];
+        }
+        if (downArrow == false)
+        {
+            return;
+        }
+
+        if (upArrowIn == false)
+        {
+            texture.SetPixel(3 * x + 1, 3 * y, entryCol);
+            texture.SetPixel(3 * x + 1, 3 * y - 1, exitCol);
+        }
+        else
+        {
+            texture.SetPixel(3 * x + 1, 3 * y, entryCol);
+            texture.SetPixel(3 * x + 1, 3 * y - 1, exitCol);
+        }
+    }
+
+    public void setArrowPixels(Texture2D texture, int x, int y)
+    {
+        //start with left
+        setLeftArrow(texture, x, y);
+        //now right
+        setRightArrow(texture, x, y);
+        //now up
+        setUpArrow(texture, x, y);
+        //now down
+        setDownArrow(texture, x, y);
+
+    }
+
+    public void setPixelTile(Texture2D texture, int x, int y)
+    {
+        string spriteToWrite = OJColour.EMPTY;
+        int spriteRead = tiles[x, y];
+
+        switch (spriteRead)
+        {
+            case -1:
+                spriteToWrite = OJColour.EMPTY;
+                break;
+            case (int)TileEnum.HOME:
+                spriteToWrite = OJColour.HOME;
+                break;
+            case (int)TileEnum.STAR:
+                spriteToWrite = OJColour.STAR;
+                break;
+            case (int)TileEnum.STAR2:
+                spriteToWrite = OJColour.STAR2;
+                break;
+            case (int)TileEnum.DRAW:
+                spriteToWrite = OJColour.DRAW;
+                break;
+            case (int)TileEnum.DRAW2:
+                spriteToWrite = OJColour.DRAW2;
+                break;
+            case (int)TileEnum.BATTLE:
+                spriteToWrite = OJColour.BATTLE;
+                break;
+            case (int)TileEnum.BATTLE2:
+                spriteToWrite = OJColour.BATTLE2;
+                break;
+            case (int)TileEnum.DROP:
+                spriteToWrite = OJColour.DROP;
+                break;
+            case (int)TileEnum.DROP2:
+                spriteToWrite = OJColour.DROP2;
+                break;
+            case (int)TileEnum.WARP:
+                spriteToWrite = OJColour.WARP;
+                break;
+            case (int)TileEnum.WARPMOVE:
+                spriteToWrite = OJColour.WARPMOVE;
+                break;
+            case (int)TileEnum.WARPMOVE2:
+                spriteToWrite = OJColour.WARPMOVE2;
+                break;
+            case (int)TileEnum.MOVE:
+                spriteToWrite = OJColour.MOVE;
+                break;
+            case (int)TileEnum.MOVE2:
+                spriteToWrite = OJColour.MOVE2;
+                break;
+            case (int)TileEnum.BLANK:
+                spriteToWrite = OJColour.BLANK;
+                break;
+            case (int)TileEnum.ICE:
+                spriteToWrite = OJColour.ICE;
+                break;
+            case (int)TileEnum.HEAL:
+                spriteToWrite = OJColour.HEAL;
+                break;
+            case (int)TileEnum.HEAL2:
+                spriteToWrite = OJColour.HEAL2;
+                break;
+            case (int)TileEnum.DECK:
+                spriteToWrite = OJColour.DECK;
+                break;
+            default:
+                spriteToWrite = OJColour.EMPTY;
+                break;
+        }
+        Color col;
+        ColorUtility.TryParseHtmlString(spriteToWrite, out col);
+        for (int x1=0; x1 < 3; x1++)
+        {
+            for(int y1=0; y1<3; y1++)
+            {
+                
+                texture.SetPixel(3*x + x1, 3*y + y1, col);
+            }
+        }
+    }
+
+
 }
