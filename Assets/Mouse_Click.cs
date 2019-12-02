@@ -17,22 +17,102 @@ public class Mouse_Click : MonoBehaviour
     public const int RIGHT = 3;
 
     //was told max size is 15x15 by someone
-    const int xMax = 15;
-    const int yMax = 15;
+    public int xMax = 15;
+    public int yMax = 15;
     int[,] tiles = null;
     GameObject[,] objects = null;
     GameObject[,,] arrows = null;
-    public bool[,,] arrowTiles = new bool[xMax, yMax, 4];
+    public bool[,,] arrowTiles = null;
 
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log(Application.dataPath);
-        tiles = new int[xMax, yMax];
-        //initialise empty
+        init();
+    }
+
+
+    public void removeEverything()
+    {
+
         for(int x=0; x<xMax; x++)
         {
             for(int y=0; y<yMax; y++)
+            {
+                //remove all tiles
+                if(objects != null)
+                {
+                    if (objects[x, y] != null)
+                    {
+                        Destroy(objects[x, y]);
+                    }
+                    objects[x, y] = null;
+                }
+                //remove all arrows
+                if (arrows != null)
+                {
+                    for (int z = 0; z < 4; z++)
+                    {
+                        if (arrows[x, y, z] != null)
+                        {
+                            arrows[x, y, z] = null;
+                        }
+                        arrows[x, y, z] = null;
+                    }
+                }
+            }
+        }
+    }
+
+    public void init()
+    {
+
+        removeEverything();
+        int fieldSizeVal = GameObject.Find("FieldSizeDropdown").GetComponent<Dropdown>().value;
+
+        switch (fieldSizeVal)
+        {
+            case 0://15x15
+                xMax = 15;
+                yMax = 15;
+                break;
+            case 1://13x13
+                xMax = 13;
+                yMax = 13;
+                break;
+            case 2://11x11
+                xMax = 11;
+                yMax = 11;
+                break;
+            case 3://12x12/
+                xMax = 12;
+                yMax = 12;
+                break;
+            case 4://14x14
+                xMax = 14;
+                yMax = 14;
+                break;
+            case 5://13x10
+                xMax = 13;
+                yMax = 10;
+                break;
+            case 6://13x12
+                xMax = 13;
+                yMax = 12;
+                break;
+            default:
+                xMax = 11;
+                yMax = 11;
+                break;
+        }
+
+
+
+        Debug.Log(Application.dataPath);
+        tiles = new int[xMax, yMax];
+        //initialise empty
+        for (int x = 0; x < xMax; x++)
+        {
+            for (int y = 0; y < yMax; y++)
             {
                 tiles[x, y] = -1;
             }
@@ -54,15 +134,15 @@ public class Mouse_Click : MonoBehaviour
         {
             for (int y = 0; y < yMax; y++)
             {
-                for(int z = 0; z<4; z++)
+                for (int z = 0; z < 4; z++)
                 {
                     arrows[x, y, z] = null;
                 }
-                
+
             }
         }
 
-        //arrowTiles = new bool[xMax, yMax, 4];
+        arrowTiles = new bool[xMax, yMax, 4];
         //initialise empty
         for (int x = 0; x < xMax; x++)
         {
@@ -75,7 +155,6 @@ public class Mouse_Click : MonoBehaviour
 
             }
         }
-
     }
 
     // Update is called once per frame
@@ -104,7 +183,7 @@ public class Mouse_Click : MonoBehaviour
             int xLoc = (int)Mathf.RoundToInt(point.x);
             int yLoc = (int)Mathf.RoundToInt(point.y);
 
-            if (xLoc >= xMax / 2 || yLoc >= yMax / 2 || xLoc <= -xMax / 2 || yLoc <= -yMax / 2)
+            if (xLoc > xMax / 2 || yLoc > yMax / 2 || xLoc < -xMax / 2 || yLoc < -yMax / 2)
             {
                 Debug.Log("Too far, would leave array");
                 return;
@@ -297,7 +376,7 @@ public class Mouse_Click : MonoBehaviour
             int xLoc = (int)Mathf.RoundToInt(point.x);
             int yLoc = (int)Mathf.RoundToInt(point.y);
 
-            if (xLoc >= xMax / 2 || yLoc >= yMax / 2 || xLoc <= -xMax / 2 || yLoc <= -yMax / 2)
+            if (xLoc > xMax / 2 || yLoc > yMax / 2 || xLoc < -xMax / 2 || yLoc < -yMax / 2)
             {
                 Debug.Log("Too far, would leave array");
                 return;
