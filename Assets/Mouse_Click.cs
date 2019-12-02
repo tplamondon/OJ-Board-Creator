@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class Mouse_Click : MonoBehaviour
 {
 
-    public Sprite[] spriteList = new Sprite[22];
+    public Sprite[] spriteList = new Sprite[23];
     public int spriteToDo = (int)TileEnum.HOME;
 
     public const int LEFT = 0;
@@ -138,8 +138,8 @@ public class Mouse_Click : MonoBehaviour
             //else, it's an arrow
             else
             {
-                //if there's no tile
-                if (tiles[xLoc + xMax / 2, yLoc + yMax / 2] == -1)
+                //if there's no tile or it's a deck
+                if (tiles[xLoc + xMax / 2, yLoc + yMax / 2] == -1 || tiles[xLoc + xMax / 2, yLoc + yMax / 2] == (int)TileEnum.DECK)
                 {
                     return;
                 }
@@ -147,7 +147,7 @@ public class Mouse_Click : MonoBehaviour
                 if (spriteToDo == (int)TileEnum.LEFT)
                 {
                     //if there's a tile beside us
-                    if(isValidIndex(xLoc + xMax / 2 - 1, yLoc + yMax / 2) == true){
+                    if(isValidIndexNotDeck(xLoc + xMax / 2 - 1, yLoc + yMax / 2) == true){
                         if(tiles[xLoc + xMax / 2 - 1, yLoc + yMax / 2] == -1)
                         {
                             return;
@@ -181,7 +181,7 @@ public class Mouse_Click : MonoBehaviour
                 if (spriteToDo == (int)TileEnum.UP)
                 {
                     //if there's a tile beside us
-                    if (isValidIndex(xLoc + xMax / 2, yLoc + yMax / 2 + 1) == true)
+                    if (isValidIndexNotDeck(xLoc + xMax / 2, yLoc + yMax / 2 + 1) == true)
                     {
                         if (tiles[xLoc + xMax / 2, yLoc + yMax / 2 + 1] == -1)
                         {
@@ -216,7 +216,7 @@ public class Mouse_Click : MonoBehaviour
                 if (spriteToDo == (int)TileEnum.DOWN)
                 {
                     //if there's a tile beside us
-                    if (isValidIndex(xLoc + xMax / 2, yLoc + yMax / 2 -1) == true)
+                    if (isValidIndexNotDeck(xLoc + xMax / 2, yLoc + yMax / 2 -1) == true)
                     {
                         if (tiles[xLoc + xMax / 2, yLoc + yMax / 2 -1] == -1)
                         {
@@ -253,7 +253,7 @@ public class Mouse_Click : MonoBehaviour
                 if (spriteToDo == (int)TileEnum.RIGHT)
                 {
                     //if there's a tile beside us
-                    if (isValidIndex(xLoc + xMax / 2 + 1, yLoc + yMax / 2) == true)
+                    if (isValidIndexNotDeck(xLoc + xMax / 2 + 1, yLoc + yMax / 2) == true)
                     {
                         if (tiles[xLoc + xMax / 2 + 1, yLoc + yMax / 2] == -1)
                         {
@@ -385,6 +385,19 @@ public class Mouse_Click : MonoBehaviour
         return true;
     }
 
+    public bool isValidIndexNotDeck(int x, int y)
+    {
+        if (x < 0 || y < 0 || x >= xMax || y >= yMax)
+        {
+            return false;
+        }
+        if(tiles[x, y] != (int)TileEnum.DECK)
+        {
+            return false;
+        }
+        return true;
+    }
+
     public void changeSprite()
     {
         var drop = GameObject.Find("TileChoose").GetComponent<Dropdown>();
@@ -459,9 +472,13 @@ public class Mouse_Click : MonoBehaviour
             case "Right Arrow":
                 spriteToDo = (int)TileEnum.RIGHT;
                 break;
+            case "Deck":
+                spriteToDo = (int)TileEnum.DECK;
+                break;
             default:
                 spriteToDo = (int)TileEnum.HOME;
                 break;
+
         }
         //spriteToDo = drop.value;
     }

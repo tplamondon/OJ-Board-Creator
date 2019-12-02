@@ -23,5 +23,6 @@ public enum TileEnum
     LEFT,
     UP,
     DOWN,
-    RIGHT
+    RIGHT,
+    DECK,
 }
