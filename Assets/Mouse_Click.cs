@@ -71,7 +71,7 @@ public class Mouse_Click : MonoBehaviour
                     {
                         if (arrows[x, y, z] != null)
                         {
-                            arrows[x, y, z] = null;
+                            Destroy(arrows[x, y, z]);
                         }
                         arrows[x, y, z] = null;
                     }
@@ -122,12 +122,6 @@ public class Mouse_Click : MonoBehaviour
                 break;
         }
 
-        //create the object
-        //GameObject fieldBG = GameObject.Find("FieldMask");
-
-        //float objWidth = fieldBG.GetComponent<SpriteRenderer>().bounds.size.x;
-        //float objHeight = fieldBG.GetComponent<SpriteRenderer>().bounds.size.y;
-        //fieldBG.GetComponent<SpriteRenderer>().bounds.size = new Vector3(xMax, yMax, 1)
         fieldBG.GetComponent<Transform>().localScale = new Vector3(xMax / fieldMaskWidth, yMax / fieldMaskHeight, 1);
 
         float xShift = 0f;
@@ -141,10 +135,7 @@ public class Mouse_Click : MonoBehaviour
             yShift -= 0.5f;
         }
         fieldBG.transform.position = new Vector3(0 + xShift, 0 + yShift, 1);
-        //objects[xLoc + xMax / 2, yLoc + yMax / 2] = obj;
 
-
-        Debug.Log(Application.dataPath);
         tiles = new int[xMax, yMax];
         //initialise empty
         for (int x = 0; x < xMax; x++)
@@ -239,15 +230,9 @@ public class Mouse_Click : MonoBehaviour
          *******************************/
         if (Input.GetMouseButtonDown(0))
         {
-            //Debug.Log("Pressed primary button.");
-            if (Input.mousePosition.x > 200 || tiles == null)
-            {
-                //Debug.Log(Input.mousePosition.ToString());
-            }
-            int xPos = (int)Input.mousePosition.x;
             int x = (int)Input.mousePosition.x;
             int y = (int)Input.mousePosition.y;
-            if (xPos < 200)
+            if (x < 200)
             {
                 return;
             }
@@ -257,7 +242,7 @@ public class Mouse_Click : MonoBehaviour
             int xLoc = (int)Mathf.RoundToInt(point.x);
             int yLoc = (int)Mathf.RoundToInt(point.y);
 
-            if (xLoc > xMax / 2 || yLoc > yMax / 2 || xLoc < -xMax / 2 || yLoc < -yMax / 2)
+            if (Mathf.Abs(xLoc) > xMax / 2 || Mathf.Abs(yLoc) > yMax / 2)
             {
                 Debug.Log("Too far, would leave array");
                 return;
@@ -432,15 +417,9 @@ public class Mouse_Click : MonoBehaviour
          *******************************/
         if (Input.GetMouseButtonDown(1))
         {
-            //Debug.Log("Pressed primary button.");
-            if (Input.mousePosition.x > 200 || tiles == null)
-            {
-                //Debug.Log(Input.mousePosition.ToString());
-            }
-            int xPos = (int)Input.mousePosition.x;
             int x = (int)Input.mousePosition.x;
             int y = (int)Input.mousePosition.y;
-            if (xPos < 200)
+            if (x < 200)
             {
                 return;
             }
@@ -450,7 +429,7 @@ public class Mouse_Click : MonoBehaviour
             int xLoc = (int)Mathf.RoundToInt(point.x);
             int yLoc = (int)Mathf.RoundToInt(point.y);
 
-            if (xLoc > xMax / 2 || yLoc > yMax / 2 || xLoc < -xMax / 2 || yLoc < -yMax / 2)
+            if (Mathf.Abs(xLoc) > xMax / 2 || Mathf.Abs(yLoc) > yMax / 2)
             {
                 Debug.Log("Too far, would leave array");
                 return;
@@ -488,7 +467,7 @@ public class Mouse_Click : MonoBehaviour
 
     public void scrollOut()
     {
-        if (Camera.main.GetComponent<Camera>().orthographicSize == 15)
+        if (Camera.main.GetComponent<Camera>().orthographicSize == 10)
         {
             return;
         }
@@ -516,6 +495,51 @@ public class Mouse_Click : MonoBehaviour
             //set to null
             arrows[x, y, z] = null;
             arrowTiles[x, y, z] = false;
+        }
+
+        //look for left arrow in
+        if(isValidIndex(x+1, y))
+        {
+            if (arrows[x+1, y, LEFT] != null)
+            {
+                Destroy(arrows[x+1, y, LEFT]);
+            }
+            //set to null
+            arrows[x+1, y, LEFT] = null;
+            arrowTiles[x+1, y, LEFT] = false;
+        }
+        //look for right arrow in
+        if (isValidIndex(x - 1, y))
+        {
+            if (arrows[x - 1, y, RIGHT] != null)
+            {
+                Destroy(arrows[x - 1, y, RIGHT]);
+            }
+            //set to null
+            arrows[x - 1, y, RIGHT] = null;
+            arrowTiles[x - 1, y, RIGHT] = false;
+        }
+        //look for down arrow in
+        if (isValidIndex(x, y + 1))
+        {
+            if (arrows[x, y + 1, DOWN] != null)
+            {
+                Destroy(arrows[x, y + 1, DOWN]);
+            }
+            //set to null
+            arrows[x, y + 1, DOWN] = null;
+            arrowTiles[x, y + 1, DOWN] = false;
+        }
+        //look for up arrow in
+        if (isValidIndex(x, y - 1))
+        {
+            if (arrows[x, y - 1, UP] != null)
+            {
+                Destroy(arrows[x, y - 1, UP]);
+            }
+            //set to null
+            arrows[x, y - 1, UP] = null;
+            arrowTiles[x, y - 1, UP] = false;
         }
     }
 
