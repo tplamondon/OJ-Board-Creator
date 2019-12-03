@@ -29,9 +29,18 @@ public class Mouse_Click : MonoBehaviour
     float fieldMaskWidth;
     float fieldMaskHeight;
 
+
+    //camera stuff
+    private Vector3 ResetCamera;
+    private Vector3 Origin;
+    private Vector3 Diference;
+    private bool Drag = false;
+
     // Start is called before the first frame update
     void Start()
     {
+        ResetCamera = Camera.main.transform.position;
+
         fieldBG = GameObject.Find("FieldMask");
         fieldMaskWidth = fieldBG.GetComponent<SpriteRenderer>().bounds.size.x;
         fieldMaskHeight = fieldBG.GetComponent<SpriteRenderer>().bounds.size.y;
@@ -73,7 +82,7 @@ public class Mouse_Click : MonoBehaviour
 
     public void init()
     {
-
+        resetCamera();
         removeEverything();
         int fieldSizeVal = GameObject.Find("FieldSizeDropdown").GetComponent<Dropdown>().value;
 
@@ -183,6 +192,43 @@ public class Mouse_Click : MonoBehaviour
 
             }
         }
+    }
+
+    void LateUpdate()
+    {
+        if (Input.GetMouseButton(2))
+        {
+            Diference = (Camera.main.ScreenToWorldPoint(Input.mousePosition)) - Camera.main.transform.position;
+            if (Drag == false)
+            {
+                Drag = true;
+                Origin = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            }
+        }
+        else
+        {
+            Drag = false;
+        }
+        if (Drag == true)
+        {
+            float newPosX = Origin.x - Diference.x;
+            float newPosY = Origin.y - Diference.y;
+            float newPosZ = Camera.main.transform.position.z;
+            Vector3 newPos = new Vector3(Mathf.Clamp(newPosX, -xMax/2, xMax/2), Mathf.Clamp(newPosY, -yMax/2, yMax/2), newPosZ);
+
+            //Vector3 newPos = Origin - Diference;
+            Debug.Log(newPos);
+            if(!(newPos.x > xMax || newPos.x < -xMax || newPos.y > yMax || newPos.y < -yMax))
+            {
+                Camera.main.transform.position = newPos;
+            }
+            
+        }
+    }
+
+    void resetCamera()
+    {
+        Camera.main.transform.position = ResetCamera;
     }
 
     // Update is called once per frame
@@ -424,6 +470,9 @@ public class Mouse_Click : MonoBehaviour
             scrollOut();
         }
     }
+
+
+
 
     /******************************
      * SCROLLING
