@@ -1673,7 +1673,6 @@ GameObject:
   - component: {fileID: 912771295}
   - component: {fileID: 912771294}
   - component: {fileID: 912771297}
-  - component: {fileID: 912771298}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -1768,22 +1767,6 @@ MonoBehaviour:
   spriteToDo: 0
   xMax: 15
   yMax: 15
---- !u!114 &912771298
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 912771293}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 437d1c033b41da84e854ae621380bdbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &919452899
 GameObject:
   m_ObjectHideFlags: 0
