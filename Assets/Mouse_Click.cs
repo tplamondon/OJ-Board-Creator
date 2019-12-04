@@ -991,58 +991,80 @@ public class Mouse_Click : MonoBehaviour
     public byte getMovementBits(int x, int y)
     {
         byte retVal = 0;
-        int exitWest = 0; // arrow left in
+        int exitWest = 0; // arrow RIGHT in
         int exitNorth = 0; // arrow down in
-        int exitEast = 0; // arrow right in
+        int exitEast = 0; // arrow LEFT in
         int exitSouth = 0; // arrow up in
         int enterWest = 0; // arrow left
         int enterNorth = 0; // arrow up
         int enterEast = 0; // arrow right
         int enterSouth = 0; //arrow down
 
-        if(isValidIndex(x+1, y))
+        if(isValidIndex(x-1, y))
         {
-            if(arrows[x+1, y, LEFT] == true)
+            if(arrows[x-1, y, RIGHT] == true)
             {
-                exitWest = 1;
+                //exitWest = 1;
+                //enterWest = 1;
+                //enterEast = 1;
+                enterWest = 1;
             }
         }
         if (isValidIndex(x, y+1))
         {
             if (arrows[x, y+1, DOWN] == true)
             {
-                exitNorth = 1;
+                //exitNorth = 1;
+                //enterNorth = 1;
+                enterSouth = 1;
             }
         }
-        if (isValidIndex(x - 1, y))
+        if (isValidIndex(x + 1, y))
         {
-            if (arrows[x - 1, y, RIGHT] == true)
+            if (arrows[x + 1, y, LEFT] == true)
             {
-                exitEast = 1;
+                //exitEast = 1;
+                //enterEast = 1;
+                //enterWest = 1;
+                enterEast = 1;
             }
         }
         if (isValidIndex(x, y - 1))
         {
             if (arrows[x, y - 1, UP] == true)
             {
-                exitSouth = 1;
+                //exitSouth = 1;
+                //enterSouth = 1;
+                enterNorth = 1;
             }
         }
         if(arrows[x, y, LEFT] == true)
         {
-            enterWest = 1;
+            //enterWest = 1;
+            //exitWest = 1;
+            //exitEast = 1;
+            //enterWest = 1;
+            exitEast = 1;
         }
         if (arrows[x, y, UP] == true)
         {
-            enterNorth = 1;
+            //enterNorth = 1;
+            //exitNorth = 1;
+            //exitSouth = 1;
+            exitNorth = 1;
         }
         if (arrows[x, y, RIGHT] == true)
         {
-            enterEast = 1;
+            //enterEast = 1;
+            //exitEast = 1;
+            exitWest = 1;
         }
         if (arrows[x, y, DOWN] == true)
         {
-            enterSouth = 1;
+            //enterSouth = 1;
+            //exitSouth = 1;
+            //exitNorth = 1;
+            exitSouth = 1;
         }
         /*
         * Movement Flags:
