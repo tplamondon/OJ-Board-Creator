@@ -31,6 +31,10 @@ public class OJColour
     public const string STAR = "#FFC90E";
     public const string STAR2 = "#AE8700";
 
+    public const string COOPBOSS = "#B70046";
+
+
+
     //MOVEMENT
     public const string ENTRY = "#FFFFFF";
     public const string EXIT = "#404040";

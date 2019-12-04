@@ -939,6 +939,128 @@ public class Mouse_Click : MonoBehaviour
     }
 
 
+    /*********************
+     *  Export to FLD
+     ********************/
+    //tileID 00 00 00 moveFlags 00 00 00
+    public void exportFLD()
+    {
+        //byte[] bytes = new byte[0];
+        List<byte> bytes = new List<byte>();
+        
+        //go through from top left and right
+        for (int y=yMax-1; y>=0; y--)
+        {
+            for (int x = 0; x < xMax; x++)
+            {
+                //get tile id
+                int tile = tiles[x, y];
+                //get it's byte format
+                byte tileByte = TileID.getTileID(tile);
+                //add tile byte
+                bytes.Add(tileByte);
+                //add padding
+                bytes.Add(0);
+                bytes.Add(0);
+                bytes.Add(0);
+                //get movement bits
+                byte moveBits = getMovementBits(x, y);
+                //add movebits
+                bytes.Add(moveBits);
+                //add padding
+                bytes.Add(0);
+                bytes.Add(0);
+                bytes.Add(0);
+            }
+        }
+        //write to file
+        byte[] byteArray = bytes.ToArray();
+        File.WriteAllBytes(Application.dataPath + "/../Field.fld", byteArray);
+    }
+    /*
+     * Movement Flags:
+        Bit 0: Exit west
+        Bit 1: Exit north
+        Bit 2: Exit east
+        Bit 3: Exit south
+        Bit 4: Enter west
+        Bit 5: Enter north
+        Bit 6: Enter east
+        Bit 7: Enter south
+     */
+    public byte getMovementBits(int x, int y)
+    {
+        byte retVal = 0;
+        int exitWest = 0; // arrow left in
+        int exitNorth = 0; // arrow down in
+        int exitEast = 0; // arrow right in
+        int exitSouth = 0; // arrow up in
+        int enterWest = 0; // arrow left
+        int enterNorth = 0; // arrow up
+        int enterEast = 0; // arrow right
+        int enterSouth = 0; //arrow down
+
+        if(isValidIndex(x+1, y))
+        {
+            if(arrows[x+1, y, LEFT] == true)
+            {
+                exitWest = 1;
+            }
+        }
+        if (isValidIndex(x, y+1))
+        {
+            if (arrows[x, y+1, DOWN] == true)
+            {
+                exitNorth = 1;
+            }
+        }
+        if (isValidIndex(x - 1, y))
+        {
+            if (arrows[x - 1, y, RIGHT] == true)
+            {
+                exitEast = 1;
+            }
+        }
+        if (isValidIndex(x, y - 1))
+        {
+            if (arrows[x, y - 1, UP] == true)
+            {
+                exitSouth = 1;
+            }
+        }
+        if(arrows[x, y, LEFT] == true)
+        {
+            enterWest = 1;
+        }
+        if (arrows[x, y, UP] == true)
+        {
+            enterNorth = 1;
+        }
+        if (arrows[x, y, RIGHT] == true)
+        {
+            enterEast = 1;
+        }
+        if (arrows[x, y, DOWN] == true)
+        {
+            enterSouth = 1;
+        }
+        /*
+        * Movement Flags:
+            Bit 0: Exit west
+            Bit 1: Exit north
+            Bit 2: Exit east
+            Bit 3: Exit south
+            Bit 4: Enter west
+            Bit 5: Enter north
+            Bit 6: Enter east
+            Bit 7: Enter south
+        */
+
+        retVal = (byte)((exitWest << 7) + (exitNorth << 6) + (exitEast << 5) + (exitSouth << 4) + (enterWest << 3) + (enterNorth << 2) + (enterEast << 1) + (enterSouth));
+        return retVal;
+    }
+
+
     public void quitApplication()
     {
         Application.Quit();

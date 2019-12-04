@@ -25,4 +25,5 @@ public enum TileEnum
     DOWN,
     RIGHT,
     DECK,
+    COOPBOSS //FOR LATER
 }
